@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "SenderRemarketing · Campaign workspace",
-  description: "A workspace to organize contacts, WhatsApp lines and remarketing campaigns.",
+  description: "Organizá tus contactos, líneas y campañas desde un espacio privado.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
