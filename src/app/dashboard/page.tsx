@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { SignOutButton } from "@/components/sign-out-button";
 import {
   Activity, CalendarClock, ChevronRight, CircleHelp, ContactRound, LayoutDashboard,
-  MessageSquare, Plus, Send, ShieldCheck, Smartphone, Users, Zap
+  MessageSquare, Plus, Send, Settings2, ShieldCheck, Smartphone, Users, Zap
 } from "lucide-react";
 
 function Metric({ label, value, detail, icon: Icon }: { label: string; value: number; detail: string; icon: React.ElementType }) {
