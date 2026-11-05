@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { SignOutButton } from "@/components/sign-out-button";
 import {
-  CalendarClock, ChevronRight, CircleHelp, ContactRound, LayoutDashboard,
+  Activity, CalendarClock, ChevronRight, CircleHelp, ContactRound, LayoutDashboard,
   MessageSquare, Plus, Send, ShieldCheck, Smartphone, Users, Zap
 } from "lucide-react";
 
