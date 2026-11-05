@@ -4,3 +4,7 @@
 
 [build.environment]
   NODE_VERSION = "20"
+
+# Explicitly enable Netlify's maintained Next.js runtime for SSR, App Router and middleware.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
