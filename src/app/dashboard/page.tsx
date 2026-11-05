@@ -45,8 +45,8 @@ function SectionTitle({ title, subtitle, action }: { title: string; subtitle: st
 }
 
 export default async function Home() {
-  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-    return <main className="mx-auto max-w-xl p-10"><h1 className="text-2xl font-bold">Configuración pendiente</h1><p className="mt-3 text-sm text-slate-600">Conectá el proyecto con Supabase agregando NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY en las variables de entorno.</p></main>;
+  if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !(process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)) {
+    return <main className="mx-auto max-w-xl p-10"><h1 className="text-2xl font-bold">Configuración pendiente</h1><p className="mt-3 text-sm text-slate-600">Conectá el proyecto con Supabase agregando NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY en las variables de entorno.</p></main>;
   }
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
