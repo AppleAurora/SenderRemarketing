@@ -95,8 +95,8 @@ export function ContactsWorkspace({ initialContacts, initialLists }: { initialCo
     setError(""); setNotice("");
     startTransition(async () => {
       const result = await addContact(newContact);
-      if (!result.ok) { setError(result.message); return; }
-      setNotice(result.message); setShowAdd(false); setNewContact({name:"",phone:"",email:"",consentConfirmed:false});
+      if (!result.ok) { setError(result.message ?? "No se pudo completar la operación."); return; }
+      setNotice(result.message ?? "Contacto agregado correctamente."); setShowAdd(false); setNewContact({name:"",phone:"",email:"",consentConfirmed:false});
       window.location.reload();
     });
   }
@@ -105,7 +105,7 @@ export function ContactsWorkspace({ initialContacts, initialLists }: { initialCo
     if (!window.confirm("¿Eliminar este contacto del espacio de trabajo?")) return;
     startTransition(async () => {
       const result = await deleteContact(id);
-      if (!result.ok) { setError(result.message); return; }
+      if (!result.ok) { setError(result.message ?? "No se pudo completar la operación."); return; }
       setContacts(current => current.filter(c => c.id !== id));
       setNotice("Contacto eliminado.");
     });
