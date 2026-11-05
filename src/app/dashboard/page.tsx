@@ -19,7 +19,7 @@ const campaigns = [
   { name: "Beneficio clientes frecuentes", audience: "Segmento VIP · 185 contactos", date: "Ayer, 11:20", status: "Finalizada", tone: "green", progress: 100 },
 ];
 
-function Sidebar() {
+function Sidebar({ workspaceName, userEmail }: { workspaceName: string; userEmail: string }) {
   return <aside className="fixed inset-y-0 left-0 z-20 hidden w-[252px] flex-col border-r border-[#eaecf0] bg-white px-5 py-6 lg:flex">
     <div className="mb-10 flex items-center gap-3 px-1"><div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand text-white shadow-lg shadow-violet-200"><Send size={19} /></div><div><div className="text-[15px] font-bold tracking-tight">Sender<span className="text-brand">Remarketing</span></div><div className="mt-0.5 text-[10px] font-medium uppercase tracking-[.16em] text-[#98a2b3]">Workspace</div></div></div>
     <div className="mb-3 px-2 text-[10px] font-bold uppercase tracking-[.14em] text-[#98a2b3]">Principal</div>
@@ -36,7 +36,7 @@ function Sidebar() {
       <a className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[#667085] hover:bg-gray-50" href="#settings"><Settings2 size={17}/>Configuración</a>
     </nav>
     <div className="mt-auto rounded-xl border border-[#ecebff] bg-[#f8f7ff] p-4"><div className="mb-2 flex items-center gap-2 text-xs font-semibold text-[#5148e5]"><Zap size={14}/>Tu espacio de trabajo</div><p className="text-xs leading-5 text-[#667085]">Organizá tus contactos y campañas desde un solo lugar.</p><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#e6e4ff]"><div className="h-full w-[68%] rounded-full bg-brand"/></div><div className="mt-2 text-[10px] text-[#667085]">Espacio de prueba · 68% utilizado</div></div>
-    <div className="mt-5 flex items-center gap-3 border-t border-[#eaecf0] pt-5"><div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#e8e7ff] text-xs font-bold text-brand">AA</div><div className="min-w-0 flex-1"><div className="truncate text-xs font-semibold">{workspaceName}</div><div className="text-[10px] text-[#98a2b3]">{user?.email}</div></div><SignOutButton/><MoreHorizontal size={18} className="text-[#98a2b3]"/></div>
+    <div className="mt-5 flex items-center gap-3 border-t border-[#eaecf0] pt-5"><div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#e8e7ff] text-xs font-bold text-brand">AA</div><div className="min-w-0 flex-1"><div className="truncate text-xs font-semibold">{workspaceName}</div><div className="text-[10px] text-[#98a2b3]">{userEmail}</div></div><SignOutButton/><MoreHorizontal size={18} className="text-[#98a2b3]"/></div>
   </aside>;
 }
 
@@ -52,7 +52,7 @@ export default async function Home() {
   const { data: { user } } = await supabase.auth.getUser();
   const workspaceName = user?.user_metadata?.organization_name || user?.email || "Tu espacio de trabajo";
   return <div id="dashboard" className="min-h-screen">
-    <Sidebar />
+    <Sidebar workspaceName={workspaceName} userEmail={user?.email ?? ""} />
     <main className="min-h-screen lg:pl-[252px]">
       <header className="sticky top-0 z-10 flex h-[72px] items-center justify-between border-b border-[#eaecf0] bg-white/90 px-5 backdrop-blur-md sm:px-8">
         <div><div className="text-xs text-[#98a2b3]">Workspace / <span className="text-[#667085]">Dashboard</span></div><div className="mt-1 text-sm font-semibold">Resumen general</div></div>
