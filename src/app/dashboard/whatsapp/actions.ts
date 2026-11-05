@@ -52,7 +52,7 @@ export async function sendWhatsAppTest(recipientInput: string) {
     .select("id")
     .eq("organization_id", member.organization_id)
     .eq("provider", "meta_cloud_api")
-    .eq("phone_e164", process.env.WHATSAPP_DISPLAY_PHONE_NUMBER || "meta-test-number")
+    .eq("display_name", "WhatsApp Cloud API · prueba")
     .maybeSingle();
 
   let lineId = existingLine?.id;
