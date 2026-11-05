@@ -10,7 +10,17 @@ export async function middleware(request: NextRequest) {
   type CookieToSet = {
     name: string;
     value: string;
-    options?: Parameters<typeof response.cookies.set>[2];
+    options?: {
+      domain?: string;
+      path?: string;
+      expires?: Date;
+      httpOnly?: boolean;
+      maxAge?: number;
+      sameSite?: boolean | "lax" | "strict" | "none";
+      secure?: boolean;
+      priority?: "low" | "medium" | "high";
+      partitioned?: boolean;
+    };
   };
 
   const supabase = createServerClient(url, key, {
