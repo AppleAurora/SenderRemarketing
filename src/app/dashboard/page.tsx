@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { SignOutButton } from "@/components/sign-out-button";
 import { Activity, ArrowDownRight, ArrowUpRight, Bell, CalendarDays, Check, ChevronDown, CircleHelp, ContactRound, FileUp, Filter, LayoutDashboard, MessageCircle, MoreHorizontal, Plus, Search, Send, Settings2, ShieldCheck, Smartphone, Users, Zap } from "lucide-react";
 
 const stats = [
@@ -35,7 +36,7 @@ function Sidebar() {
       <a className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[#667085] hover:bg-gray-50" href="#settings"><Settings2 size={17}/>Configuración</a>
     </nav>
     <div className="mt-auto rounded-xl border border-[#ecebff] bg-[#f8f7ff] p-4"><div className="mb-2 flex items-center gap-2 text-xs font-semibold text-[#5148e5]"><Zap size={14}/>Tu espacio de trabajo</div><p className="text-xs leading-5 text-[#667085]">Organizá tus contactos y campañas desde un solo lugar.</p><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#e6e4ff]"><div className="h-full w-[68%] rounded-full bg-brand"/></div><div className="mt-2 text-[10px] text-[#667085]">Espacio de prueba · 68% utilizado</div></div>
-    <div className="mt-5 flex items-center gap-3 border-t border-[#eaecf0] pt-5"><div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#e8e7ff] text-xs font-bold text-brand">AA</div><div className="min-w-0 flex-1"><div className="truncate text-xs font-semibold">{workspaceName}</div><div className="text-[10px] text-[#98a2b3]">{user?.email}</div></div><MoreHorizontal size={18} className="text-[#98a2b3]"/></div>
+    <div className="mt-5 flex items-center gap-3 border-t border-[#eaecf0] pt-5"><div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#e8e7ff] text-xs font-bold text-brand">AA</div><div className="min-w-0 flex-1"><div className="truncate text-xs font-semibold">{workspaceName}</div><div className="text-[10px] text-[#98a2b3]">{user?.email}</div></div><SignOutButton/><MoreHorizontal size={18} className="text-[#98a2b3]"/></div>
   </aside>;
 }
 
