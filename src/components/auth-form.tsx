@@ -43,18 +43,18 @@ export function AuthForm({ mode }: AuthFormProps) {
     } finally { setLoading(false); }
   }
 
-  return <main className="flex min-h-screen items-center justify-center bg-[#f7f8fc] px-4 py-12">
-    <div className="w-full max-w-[420px] rounded-2xl border border-[#eaecf0] bg-white p-8 shadow-[0_12px_40px_rgba(16,24,40,.07)]">
-      <div className="mb-8 flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#635bff] text-white">SR</div><div><div className="text-base font-bold">Sender<span className="text-[#635bff]">Remarketing</span></div><div className="text-[10px] uppercase tracking-[.15em] text-[#98a2b3]">Campaign workspace</div></div></div>
+  return <main className="flex min-h-screen items-center justify-center bg-[#090b12] px-4 py-12">
+    <div className="w-full max-w-[420px] rounded-2xl border border border-white/[0.08] bg-[#101521] p-8 shadow-[0_18px_60px_rgba(0,0,0,.35)]">
+      <div className="mb-8 flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#635bff] text-white">SR</div><div><div className="text-base font-bold">Sender<span className="text-violet-300">Remarketing</span></div><div className="text-[10px] uppercase tracking-[.15em] text-slate-500">Campaign workspace</div></div></div>
       <h1 className="text-2xl font-bold tracking-tight">{isSignup ? "Crear tu espacio" : "Bienvenido de nuevo"}</h1>
-      <p className="mt-2 text-sm text-[#667085]">{isSignup ? "Registrá tu empresa para empezar a organizar contactos y campañas." : "Iniciá sesión para entrar a tu espacio de trabajo."}</p>
+      <p className="mt-2 text-sm text-slate-400">{isSignup ? "Registrá tu empresa para empezar a organizar contactos y campañas." : "Iniciá sesión para entrar a tu espacio de trabajo."}</p>
       <form onSubmit={handleSubmit} className="mt-7 space-y-4">
-        {isSignup && <label className="block text-xs font-semibold text-[#344054]">Nombre de empresa o espacio<input value={organization} onChange={e=>setOrganization(e.target.value)} placeholder="Mi empresa" className="mt-2 w-full rounded-lg border border-[#d0d5dd] px-3 py-3 text-sm font-normal outline-none focus:border-[#635bff] focus:ring-2 focus:ring-[#635bff]/10" /></label>}
+        {isSignup && <label className="block text-xs font-semibold text-slate-300">Nombre de empresa o espacio<input value={organization} onChange={e=>setOrganization(e.target.value)} placeholder="Mi empresa" className="mt-2 w-full rounded-lg border border-white/10 px-3 py-3 bg-[#0b101a] text-slate-100 placeholder:text-slate-600 text-sm font-normal outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/10" /></label>}
         <label className="block text-xs font-semibold text-[#344054]">Correo electrónico<input type="email" required autoComplete="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="nombre@empresa.com" className="mt-2 w-full rounded-lg border border-[#d0d5dd] px-3 py-3 text-sm font-normal outline-none focus:border-[#635bff] focus:ring-2 focus:ring-[#635bff]/10" /></label>
         <label className="block text-xs font-semibold text-[#344054]">Contraseña<input type="password" required minLength={8} autoComplete={isSignup ? "new-password" : "current-password"} value={password} onChange={e=>setPassword(e.target.value)} placeholder="Mínimo 8 caracteres" className="mt-2 w-full rounded-lg border border-[#d0d5dd] px-3 py-3 text-sm font-normal outline-none focus:border-[#635bff] focus:ring-2 focus:ring-[#635bff]/10" /></label>
-        {error && <p role="alert" className="rounded-lg bg-[#fef3f2] p-3 text-xs text-[#b42318]">{error}</p>}
-        {message && <p role="status" className="rounded-lg bg-[#ecfdf3] p-3 text-xs text-[#027a48]">{message}</p>}
-        <button disabled={loading} className="w-full rounded-lg bg-[#635bff] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#5148e5] disabled:cursor-not-allowed disabled:opacity-60">{loading ? "Procesando..." : isSignup ? "Crear cuenta" : "Iniciar sesión"}</button>
+        {error && <p role="alert" className="rounded-lg bg-rose-500/10 p-3 text-xs text-rose-300">{error}</p>}
+        {message && <p role="status" className="rounded-lg bg-emerald-500/10 p-3 text-xs text-emerald-300">{message}</p>}
+        <button disabled={loading} className="w-full rounded-lg bg-[#635bff] px-4 py-3 text-sm font-semibold text-white transition hover:bg-violet-500 disabled:cursor-not-allowed disabled:opacity-60">{loading ? "Procesando..." : isSignup ? "Crear cuenta" : "Iniciar sesión"}</button>
       </form>
       <p className="mt-6 text-center text-xs text-[#667085]">{isSignup ? "¿Ya tenés una cuenta?" : "¿Todavía no tenés cuenta?"} <Link className="font-semibold text-[#635bff] hover:underline" href={isSignup ? "/login" : "/signup"}>{isSignup ? "Iniciar sesión" : "Crear cuenta"}</Link></p>
       <p className="mt-8 text-center text-[10px] leading-4 text-[#98a2b3]">Tus datos se guardan en un espacio privado. La separación entre empresas se aplica en la base de datos.</p>
