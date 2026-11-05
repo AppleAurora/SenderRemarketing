@@ -37,3 +37,14 @@ SenderRemarketing is a universal, multi-tenant workspace for contact management 
 3. Add line registry and a provider adapter boundary; evaluate supported QR/device integrations separately from production campaign sending.
 4. Add campaign composer, scheduling, queue workers, webhooks, and reporting.
 5. Add SaaS billing, plans, usage metering, and organization administration.
+
+
+## Authentication and database setup
+
+1. Create a Supabase project.
+2. In Supabase SQL Editor, run `supabase/schema.sql`.
+3. Copy the Project URL and publishable/anon key into `.env.local` as `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+4. Configure Supabase Auth email confirmation and allowed redirect URLs for localhost and the deployed domain.
+5. Deploy the repository to Vercel and add the same environment variables to the project settings.
+
+The signup flow creates a profile, a new organization, and an owner membership via a database trigger. The schema enables RLS on tenant-owned tables. Do not add the Supabase service-role key to client-side variables. Current dashboard metrics and example contacts remain mock data until the contact and campaign modules are connected to these tables.
