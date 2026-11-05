@@ -21,7 +21,7 @@ create policy scheduled_messages_select on public.scheduled_messages for select 
 -- All writes use the transactional RPC, never direct table writes from the browser.
 create or replace function public.create_batch_schedule(
  p_name text, p_line uuid, p_list uuid, p_message text, p_start timestamptz, p_interval_minutes integer default 30
-) returns jsonb language plpgsql security invoker set search_path = public as $$
+) returns jsonb language plpgsql security definer set search_path = public as $$
 declare v_org uuid; v_campaign uuid; v_count integer := 0; v_reserved integer; v_cursor timestamptz := p_start;
  v_day date; v_contact record; v_body text;
 begin
