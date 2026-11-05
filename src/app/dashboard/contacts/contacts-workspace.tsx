@@ -84,7 +84,7 @@ export function ContactsWorkspace({ initialContacts, initialLists }: { initialCo
     setError(""); setNotice("");
     startTransition(async () => {
       const result = await importContacts({ listName, rows: parsedRows, consentConfirmed });
-      if (!result.ok) { setError(result.message); return; }
+      if (!result.ok) { setError(result.message ?? "No se pudo completar la importación."); return; }
       setNotice(`Lista “${result.listName}” creada. Se importaron ${result.imported} contactos nuevos. ${result.duplicates ? `${result.duplicates} duplicados dentro del archivo fueron omitidos.` : ""}`);
       setShowImport(false); setParsedRows([]); setFileName(""); setConsentConfirmed(false);
       window.location.reload();
