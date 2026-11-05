@@ -3,12 +3,9 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { SignOutButton } from "@/components/sign-out-button";
 import {
-  Activity, ArrowUpRight, Bell, CalendarClock, ChevronRight, CircleHelp,
-  ContactRound, LayoutDashboard, MessageSquare, Plus, Send, Settings2,
-  ShieldCheck, Smartphone, Users, Zap
+  CalendarClock, ChevronRight, CircleHelp, ContactRound, LayoutDashboard,
+  MessageSquare, Plus, Send, ShieldCheck, Smartphone, Users, Zap
 } from "lucide-react";
-
-type CountResult = { count: number | null; error: { message: string } | null };
 
 function Metric({ label, value, detail, icon: Icon }: { label: string; value: number; detail: string; icon: React.ElementType }) {
   return <article className="panel p-5">
@@ -58,7 +55,7 @@ export default async function DashboardPage() {
   const totalLines = linesCount.count ?? 0;
   const totalCampaigns = campaignsCount.count ?? 0;
   const totalMessages = logsCount.count ?? 0;
-  const dateLabel = new Intl.DateTimeFormat("es-AR", { weekday: "long", day: "numeric", month: "long" }).format(new Date());
+  const dateLabel = new Intl.DateTimeFormat("es-AR", { weekday: "long", day: "numeric", month: "long", timeZone: "America/Argentina/Buenos_Aires" }).format(new Date());
 
   return <div className="min-h-screen bg-[#090b12] text-slate-100">
     <aside className="fixed inset-y-0 left-0 z-20 hidden w-[258px] flex-col border-r border-white/[0.07] bg-[#0d1019] px-5 py-6 lg:flex">
