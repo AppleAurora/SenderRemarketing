@@ -43,7 +43,7 @@ SenderRemarketing is a universal, multi-tenant workspace for contact management 
 
 1. Create a Supabase project.
 2. In Supabase SQL Editor, run `supabase/schema.sql`.
-3. Copy the Project URL and publishable/anon key into `.env.local` as `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+3. Copy the Project URL and publishable/anon key into `.env.local` as `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
 4. Configure Supabase Auth email confirmation and allowed redirect URLs for localhost and the deployed domain.
 5. Import the repository into Netlify. Netlify detects Next.js and configures its OpenNext adapter automatically; add the same environment variables to Site configuration → Environment variables, then redeploy.
 
