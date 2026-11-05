@@ -45,6 +45,6 @@ SenderRemarketing is a universal, multi-tenant workspace for contact management 
 2. In Supabase SQL Editor, run `supabase/schema.sql`.
 3. Copy the Project URL and publishable/anon key into `.env.local` as `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 4. Configure Supabase Auth email confirmation and allowed redirect URLs for localhost and the deployed domain.
-5. Deploy the repository to Vercel and add the same environment variables to the project settings.
+5. Import the repository into Netlify. Netlify detects Next.js and configures its OpenNext adapter automatically; add the same environment variables to Site configuration → Environment variables, then redeploy.
 
 The signup flow creates a profile, a new organization, and an owner membership via a database trigger. The schema enables RLS on tenant-owned tables. Do not add the Supabase service-role key to client-side variables. Current dashboard metrics and example contacts remain mock data until the contact and campaign modules are connected to these tables.
