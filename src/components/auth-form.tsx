@@ -25,7 +25,10 @@ export function AuthForm({ mode }: AuthFormProps) {
       if (isSignup) {
         const { data, error: authError } = await supabase.auth.signUp({
           email, password,
-          options: { data: { organization_name: organization.trim() || "Mi espacio de trabajo" } },
+          options: {
+            data: { organization_name: organization.trim() || "Mi espacio de trabajo" },
+            emailRedirectTo: `${window.location.origin}/auth/confirm`,
+          },
         });
         if (authError) throw authError;
         if (data.session) { router.push("/dashboard"); router.refresh(); }
