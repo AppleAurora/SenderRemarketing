@@ -1,27 +1,43 @@
 # SenderRemarketing
 
-A multi-tenant WhatsApp campaign management platform. The first milestone establishes the application shell, dashboard, contacts import workflow, campaign planning UI, and line connection inventory.
+Universal multi-tenant workspace for contact management and WhatsApp campaign operations.
 
-## Product principles
-
-- Multi-tenant data isolation from the beginning.
-- Consent-aware contact management and suppression lists.
-- Campaign scheduling separated from messaging-provider adapters.
-- QR-linked device sessions are treated as connection management only; no unofficial browser automation or artificial warm-up loops.
-- Messaging adapters must use supported provider APIs and respect platform policies.
-
-## Initial stack
+## Stack
 
 - Next.js App Router + TypeScript
 - Tailwind CSS
-- PostgreSQL + Prisma (next milestone)
-- Redis + BullMQ (next milestone)
+- Supabase Auth + PostgreSQL + Row Level Security
+- Vercel hosting (deployment setup pending)
 
-## Development
+## Run locally
 
 ```bash
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
-The current milestone is a frontend-first scaffold with mock data. No real WhatsApp messages are sent.
+Fill in `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `.env.local`.
+
+## Supabase setup
+
+1. Create a Supabase project.
+2. Run `supabase/schema.sql` in the Supabase SQL Editor.
+3. Configure Authentication email confirmation and redirect URLs.
+4. Add the Supabase URL and publishable/anon key to the local environment and Vercel project environment.
+
+See [Supabase setup guide](supabase/README.md) and [architecture notes](docs/architecture.md).
+
+## Current milestone
+
+- [x] Next.js frontend shell and dashboard mockup
+- [x] Supabase browser/server clients
+- [x] Email/password signup and login UI
+- [x] Protected dashboard routes and sign out
+- [x] Multi-tenant PostgreSQL schema with RLS policies
+- [ ] Create and configure hosted Supabase project
+- [ ] Deploy to Vercel
+- [ ] Replace dashboard mock data with tenant-scoped database queries
+- [ ] Build CSV contact import and management
+
+**Important:** The dashboard still contains demonstration data. No WhatsApp messages are sent. Messaging integrations must use supported provider interfaces and platform-compliant messaging practices.
