@@ -30,7 +30,7 @@ function createSession(id, organizationId, phone, method) {
   const s={id,organizationId,phone,status:"pending",message:"Inicializando sesión de WhatsApp Web.",qrDataUrl:null,pairingCode:null,client:null};
   const client=new Client({
     authStrategy:new LocalAuth({clientId:id,dataPath:DATA_DIR}),
-    puppeteer:{headless:true,args:["--no-sandbox","--disable-setuid-sandbox","--disable-dev-shm-usage"]},
+    puppeteer:{headless:true,executablePath:process.env.PUPPETEER_EXECUTABLE_PATH||"/usr/bin/chromium",args:["--no-sandbox","--disable-setuid-sandbox","--disable-dev-shm-usage"]},
     authTimeoutMs:60000,
   });
   s.client=client;
