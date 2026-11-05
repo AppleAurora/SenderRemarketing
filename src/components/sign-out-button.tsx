@@ -14,5 +14,5 @@ export function SignOutButton() {
     router.push("/login");
     router.refresh();
   }
-  return <button onClick={signOut} disabled={loading} className="rounded-md px-2 py-1 text-[10px] font-semibold text-[#667085] hover:bg-gray-100 disabled:opacity-50">{loading ? "Saliendo..." : "Cerrar sesión"}</button>;
+  return <button onClick={signOut} disabled={loading} className="rounded-md px-2 py-1 text-[10px] font-semibold text-slate-400 hover:bg-white/10 hover:text-white disabled:opacity-50">{loading ? "Saliendo..." : "Cerrar sesión"}</button>;
 }
