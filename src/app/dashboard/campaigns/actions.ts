@@ -49,3 +49,14 @@ export async function createMultiLineSchedule(input:{name:string;lineIds:string[
  revalidatePath("/dashboard");revalidatePath("/dashboard/campaigns");
  return {ok:true,message:`Programados ${data?.scheduled_count||0} borradores en ${data?.lines_count||0} líneas, con un máximo de ${data?.per_line_per_day||input.perLinePerDay} por línea al día. Todavía no se envían.`};
 }
+
+export async function changeCampaignState(campaignId:string,action:"start"|"pause"|"resume"|"cancel"){
+ const supabase=await createClient();
+ const {data:{user}}=await supabase.auth.getUser();
+ if(!user)return {ok:false,message:"Iniciá sesión nuevamente."};
+ if(!/^[a-f0-9-]{36}$/i.test(campaignId))return {ok:false,message:"Identificador inválido."};
+ const {data,error}=await supabase.rpc("set_campaign_state",{p_campaign:campaignId,p_action:action});
+ if(error)return {ok:false,message:error.code==="PGRST202"?"Primero ejecutá supabase/campaign_controls.sql en Supabase.":error.message};
+ revalidatePath("/dashboard");revalidatePath("/dashboard/campaigns");
+ return {ok:true,message:action==="cancel"?`Campaña cancelada. ${data?.cancelled_pending||0} mensajes pendientes cancelados.`:action==="pause"?"Campaña pausada. No se reservarán nuevos mensajes.":action==="resume"?"Campaña reanudada.":"Campaña activada para su futura ejecución."};
+}
