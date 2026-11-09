@@ -33,6 +33,11 @@ begin
  for v_contact in
   select id,name from public.contacts
   where organization_id=v_org and contact_list_id=p_list and consent_status='opted_in'
+   and not exists (
+    select 1 from public.scheduled_messages prev
+    where prev.organization_id=v_org and prev.contact_id=public.contacts.id
+      and (prev.status in ('pending','processing','sent') or prev.delivery_status in ('sent','delivered','unknown'))
+   )
   order by created_at,id
  loop
   v_scheduled:=false;
