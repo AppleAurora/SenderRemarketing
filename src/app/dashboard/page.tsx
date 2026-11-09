@@ -69,6 +69,7 @@ export default async function DashboardPage() {
         <NavLink href="/dashboard/contacts"><ContactRound size={17}/>Contactos</NavLink>
         <NavLink href="/dashboard/whatsapp"><Smartphone size={17}/>Líneas WhatsApp</NavLink>
         <NavLink href="/dashboard/campaigns"><Send size={17}/>Campañas</NavLink>
+        <NavLink href="/dashboard/inbox"><MessageSquare size={17}/>Inbox de chats</NavLink>
         <NavLink href="/dashboard/campaigns"><CalendarClock size={17}/>Programación</NavLink>
       </nav>
       <p className="mb-3 mt-9 px-2 text-[10px] font-semibold uppercase tracking-[.16em] text-slate-600">Administración</p>
