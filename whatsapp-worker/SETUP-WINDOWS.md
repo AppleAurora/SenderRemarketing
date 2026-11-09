@@ -40,3 +40,16 @@ El túnel rápido cambia de dirección cuando se reinicia. Es únicamente para p
 - Los datos de autenticación quedan en un volumen Docker persistente; proteger la cuenta de Windows y los respaldos.
 - La librería WhatsApp Web es no oficial y puede dejar de funcionar o causar restricciones de cuenta.
 - El servicio actual **solo vincula** y consulta el estado; no envía campañas.
+
+## 5. Gestión de sesiones desde el panel
+- **Conectar QR:** inicia la sesión; pulsar Consultar estado hasta que aparezca el código.
+- **Código:** intenta solicitar un código de vinculación. La disponibilidad depende de WhatsApp Web.
+- **Detener:** cierra el cliente en el servidor y deja las credenciales locales para un posible reinicio. **No garantiza desvincular el dispositivo del teléfono**; para hacerlo por completo, usar WhatsApp → Dispositivos vinculados.
+- **Reintentar:** si el worker informa desconexión o error, volver a pulsar Conectar QR.
+- Para cambiar de QR a código en una sesión pendiente, primero usar Detener.
+
+## 6. Qué NO está implementado
+- No se ha ejecutado una prueba real de vinculación ni de persistencia.
+- No existe envío automático desde el worker; las campañas quedan programadas en la base de datos.
+- No se ha conectado aún Netlify al túnel local.
+- Para producción con múltiples empresas y líneas se requiere mayor aislamiento y control operativo.
