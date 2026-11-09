@@ -11,9 +11,17 @@ export function CampaignBuilder({lists,lines}:{lists:Item[];lines:Line[]}){
  const [line,setLine]=useState(lines[0]?.id||"");
  const [message,setMessage]=useState("Hola {{nombre}}, ¿cómo estás? Te escribimos para hacer seguimiento de tu consulta.");
  const [date,setDate]=useState("");
+ const [variants,setVariants]=useState<string[]>([]);
+ const [variantDraft,setVariantDraft]=useState("");
  const [interval,setInterval]=useState(30);
  const [feedback,setFeedback]=useState("");
  const [busy,startTransition]=useTransition();
+ function addVariant(){
+  const value=variantDraft.trim();
+  if(!value||variants.includes(value)||variants.length>=10)return;
+  setVariants([...variants,value]);setVariantDraft("");
+ }
+ function selectVariant(value:string){setMessage(value);}
  function submit(){
   setFeedback("");
   if(!date||!name.trim()||!list||!line||!message.trim()){setFeedback("Completá todos los campos.");return;}
@@ -35,6 +43,14 @@ export function CampaignBuilder({lists,lines}:{lists:Item[];lines:Line[]}){
  </div>
  <label className="block text-xs text-slate-300">Mensaje de texto<textarea rows={5} value={message} onChange={e=>setMessage(e.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-[#0b101a] p-3 text-sm text-white"/></label>
  <p className="text-[11px] text-slate-500">Usá {"{{nombre}}"} para insertar automáticamente el nombre de cada contacto. El mensaje se guarda individualmente para cada destinatario.</p>
+ <section className="rounded-xl border border-violet-400/20 bg-violet-400/[0.04] p-4">
+ <h2 className="text-sm font-semibold text-violet-200">Asistente de versiones del mensaje</h2>
+ <p className="mt-2 text-xs leading-5 text-slate-400">Prepará hasta 10 alternativas con la misma propuesta. Revisalas antes de usarlas. Cambiar palabras no garantiza evitar filtros de spam; enviá únicamente a contactos que aceptaron recibir comunicaciones.</p>
+ <label className="mt-3 block text-xs text-slate-300">Nueva versión<textarea rows={3} maxLength={2000} value={variantDraft} onChange={e=>setVariantDraft(e.target.value)} placeholder="Escribí una alternativa manteniendo la misma oferta y condiciones" className="mt-2 w-full rounded-lg border border-white/10 bg-[#0b101a] p-3 text-sm text-white"/></label>
+ <button type="button" disabled={!variantDraft.trim()||variants.length>=10} onClick={addVariant} className="mt-3 rounded-lg border border-violet-400/30 px-3 py-2 text-xs font-semibold text-violet-200 disabled:opacity-40">Agregar versión</button>
+ {variants.length>0&&<div className="mt-4 space-y-2">{variants.map((v,i)=><div key={i} className="rounded-lg border border-white/10 p-3"><p className="whitespace-pre-wrap text-xs text-slate-200">{v}</p><div className="mt-3 flex gap-2"><button type="button" onClick={()=>selectVariant(v)} className="rounded-lg bg-violet-600 px-3 py-1.5 text-xs">Usar esta versión</button><button type="button" onClick={()=>setVariants(variants.filter((_,j)=>j!==i))} className="rounded-lg border border-white/10 px-3 py-1.5 text-xs">Quitar</button></div></div>)}</div>}
+ <p className="mt-3 text-[11px] text-slate-500">Por ahora las alternativas son borradores en este editor; solo se guarda el texto elegido al programar. La generación automática y la rotación por destinatario todavía no están conectadas.</p>
+ </section>
  <div className="grid gap-4 sm:grid-cols-2">
  <label className="block text-xs text-slate-300">Fecha y hora inicial<input type="datetime-local" value={date} onChange={e=>setDate(e.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-[#0b101a] p-3 text-sm text-white"/></label>
  <label className="block text-xs text-slate-300">Intervalo entre mensajes (minutos)<input type="number" min={5} max={1440} value={interval} onChange={e=>setInterval(Number(e.target.value))} className="mt-2 w-full rounded-lg border border-white/10 bg-[#0b101a] p-3 text-sm text-white"/></label>
