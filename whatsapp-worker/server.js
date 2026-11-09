@@ -3,7 +3,6 @@
 const http = require("node:http");
 const crypto = require("node:crypto");
 const fs = require("node:fs");
-const path = require("node:path");
 const QRCode = require("qrcode");
 const { Client, LocalAuth } = require("whatsapp-web.js");
 
@@ -60,12 +59,19 @@ function createSession(id, organizationId, phone, method) {
 const server=http.createServer(async(req,res)=>{
  if(req.url==="/health"&&req.method==="GET")return reply(res,200,{ok:true,service:"whatsapp-session-worker"});
  if(!authorized(req))return reply(res,401,{message:"No autorizado."});
- const match=/^\/v1\/lines\/([a-f0-9-]{36})\/(link|status)$/.exec((req.url||"").split("?")[0]);
+ const match=/^\/v1\/lines\/([a-f0-9-]{36})\/(link|status|disconnect)$/.exec((req.url||"").split("?")[0]);
  if(!match)return reply(res,404,{message:"Ruta inexistente."});
  const [,id,operation]=match;
  if(operation==="status"&&req.method==="GET"){
   const s=sessions.get(id);
   return s?reply(res,200,snapshot(s)):reply(res,200,{status:"disconnected",message:"No hay una sesión activa en este servidor."});
+ }
+ if(operation==="disconnect"&&req.method==="POST"){
+  const s=sessions.get(id);
+  if(!s)return reply(res,200,{status:"disconnected",message:"No hay sesión activa."});
+  sessions.delete(id);
+  try{await s.client.destroy();}catch(e){console.error("destroy",id,e);}
+  return reply(res,200,{status:"disconnected",message:"Sesión detenida. Para desvincular completamente el dispositivo, hacelo también desde WhatsApp."});
  }
  if(operation!=="link"||req.method!=="POST")return reply(res,405,{message:"Método no permitido."});
  try{
@@ -75,6 +81,11 @@ const server=http.createServer(async(req,res)=>{
   const current=sessions.get(id);
   if(current){
    if(current.organizationId!==organizationId||current.phone!==phone)return reply(res,403,{message:"La línea pertenece a otra configuración."});
+   if(current.status==="disconnected"||current.status==="attention"){
+    sessions.delete(id);
+    try{await current.client.destroy();}catch(e){console.error("cleanup",id,e);}
+    return reply(res,202,snapshot(createSession(id,organizationId,phone,method)));
+   }
    return reply(res,200,snapshot(current));
   }
   if(sessions.size>=MAX_SESSIONS)return reply(res,409,{message:"Se alcanzó el máximo de sesiones del servidor de prueba."});
