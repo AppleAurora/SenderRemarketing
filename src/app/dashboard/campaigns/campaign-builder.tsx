@@ -1,7 +1,7 @@
 "use client";
 import {useState,useTransition} from "react";
 import Link from "next/link";
-import {createSchedule,createRotatingSchedule} from "./actions";
+import {createSchedule,createRotatingSchedule,createMultiLineSchedule} from "./actions";
 import {ArrowLeft,CalendarClock,Send,ShieldCheck} from "lucide-react";
 type Item={id:string;name:string};
 type Line={id:string;display_name:string;connection_status:string};
@@ -9,6 +9,9 @@ export function CampaignBuilder({lists,lines}:{lists:Item[];lines:Line[]}){
  const [name,setName]=useState("");
  const [list,setList]=useState(lists[0]?.id||"");
  const [line,setLine]=useState(lines[0]?.id||"");
+ const [multiLine,setMultiLine]=useState(false);
+ const [selectedLines,setSelectedLines]=useState<string[]>(lines.slice(0,5).map(x=>x.id));
+ const [perLinePerDay,setPerLinePerDay]=useState<5|10>(5);
  const [message,setMessage]=useState("Hola {{nombre}}, ¿cómo estás? Te escribimos para hacer seguimiento de tu consulta.");
  const [date,setDate]=useState("");
  const [variants,setVariants]=useState<string[]>([]);
@@ -25,12 +28,13 @@ export function CampaignBuilder({lists,lines}:{lists:Item[];lines:Line[]}){
  function selectVariant(value:string){setMessage(value);}
  function submit(){
   setFeedback("");
-  if(!date||!name.trim()||!list||!line||(!rotation&&!message.trim())){setFeedback("Completá todos los campos.");return;}
+  if(!date||!name.trim()||!list||(!multiLine&&!line)||(!rotation&&!message.trim())){setFeedback("Completá todos los campos.");return;}
   const parsed=new Date(date);
   if(Number.isNaN(parsed.getTime())){setFeedback("La fecha no es válida.");return;}
-  if(rotation&&variants.length!==10){setFeedback("Para activar la rotación, agregá exactamente 10 versiones aprobadas.");return;}
+  if(multiLine&&selectedLines.length===0){setFeedback("Seleccioná al menos una línea.");return;}
+  if((rotation||multiLine)&&variants.length!==10){setFeedback("Para activar la rotación, agregá exactamente 10 versiones aprobadas.");return;}
   startTransition(async()=>{
-   const result=rotation?await createRotatingSchedule({name,lineId:line,listId:list,messages:variants,start:parsed.toISOString(),interval}):await createSchedule({name,lineId:line,listId:list,message,start:parsed.toISOString(),interval});
+   const result=multiLine?await createMultiLineSchedule({name,lineIds:selectedLines,listId:list,messages:variants,start:parsed.toISOString(),perLinePerDay,interval}):rotation?await createRotatingSchedule({name,lineId:line,listId:list,messages:variants,start:parsed.toISOString(),interval}):await createSchedule({name,lineId:line,listId:list,message,start:parsed.toISOString(),interval});
    setFeedback(result.message);
   });
  }
@@ -43,11 +47,20 @@ export function CampaignBuilder({lists,lines}:{lists:Item[];lines:Line[]}){
  <label className="block text-xs text-slate-300">Lista de contactos<select value={list} onChange={e=>setList(e.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-[#0b101a] p-3 text-sm text-white"><option value="">Seleccionar lista</option>{lists.map(x=><option key={x.id} value={x.id}>{x.name}</option>)}</select></label>
  <label className="block text-xs text-slate-300">Línea asignada<select value={line} onChange={e=>setLine(e.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-[#0b101a] p-3 text-sm text-white"><option value="">Seleccionar línea</option>{lines.map(x=><option key={x.id} value={x.id}>{x.display_name} · {x.connection_status}</option>)}</select></label>
  </div>
+ <section className="rounded-xl border border-white/10 p-4">
+ <label className="flex items-center gap-2 text-sm font-semibold"><input type="checkbox" checked={multiLine} onChange={e=>{setMultiLine(e.target.checked);if(e.target.checked)setRotation(true);}}/> Campaña con múltiples WhatsApp</label>
+ {multiLine&&<div className="mt-3 space-y-3">
+ <p className="text-xs text-slate-400">Seleccioná las líneas que compartirán los contactos. Se programan únicamente contactos con consentimiento, sin repetir destinatarios dentro de la campaña.</p>
+ <div className="grid gap-2 sm:grid-cols-2">{lines.map(x=><label key={x.id} className="flex items-center gap-2 rounded-lg border border-white/10 p-2 text-xs"><input type="checkbox" checked={selectedLines.includes(x.id)} onChange={e=>setSelectedLines(prev=>e.target.checked?[...prev,x.id]:prev.filter(id=>id!==x.id))}/>{x.display_name} ({x.connection_status})</label>)}</div>
+ <label className="block text-xs text-slate-300">Contactos por línea y por día<select value={perLinePerDay} onChange={e=>setPerLinePerDay(Number(e.target.value) as 5|10)} className="mt-2 w-full rounded-lg border border-white/10 bg-[#0b101a] p-3"><option value={5}>5 por línea</option><option value={10}>10 por línea</option></select></label>
+ <p className="text-xs text-emerald-300">Capacidad máxima planificada: {selectedLines.length*perLinePerDay} contactos diarios · {selectedLines.length} líneas.</p>
+ </div>}
+ </section>
  <label className="block text-xs text-slate-300">Mensaje de texto<textarea rows={5} value={message} onChange={e=>setMessage(e.target.value)} className="mt-2 w-full rounded-lg border border-white/10 bg-[#0b101a] p-3 text-sm text-white"/></label>
  <p className="text-[11px] text-slate-500">Usá {"{{nombre}}"} para insertar automáticamente el nombre de cada contacto. El mensaje se guarda individualmente para cada destinatario.</p>
  <section className="rounded-xl border border-violet-400/20 bg-violet-400/[0.04] p-4">
  <h2 className="text-sm font-semibold text-violet-200">Asistente de versiones del mensaje</h2>
- <label className="mt-3 flex items-center gap-2 text-xs text-slate-200"><input type="checkbox" checked={rotation} onChange={e=>setRotation(e.target.checked)} className="accent-violet-500"/> Rotar automáticamente 10 versiones aprobadas</label>
+ <label className="mt-3 flex items-center gap-2 text-xs text-slate-200"><input type="checkbox" checked={rotation||multiLine} disabled={multiLine} onChange={e=>setRotation(e.target.checked)} className="accent-violet-500"/> Rotar automáticamente 10 versiones aprobadas</label>
  <p className="mt-2 text-xs text-violet-200">{variants.length}/10 versiones preparadas · Orden: V1 → V2 → ... → V10 → V1</p>
  <p className="mt-2 text-xs leading-5 text-slate-400">Prepará hasta 10 alternativas con la misma propuesta. Revisalas antes de usarlas. Cambiar palabras no garantiza evitar filtros de spam; enviá únicamente a contactos que aceptaron recibir comunicaciones.</p>
  <label className="mt-3 block text-xs text-slate-300">Nueva versión<textarea rows={3} maxLength={2000} value={variantDraft} onChange={e=>setVariantDraft(e.target.value)} placeholder="Escribí una alternativa manteniendo la misma oferta y condiciones" className="mt-2 w-full rounded-lg border border-white/10 bg-[#0b101a] p-3 text-sm text-white"/></label>
