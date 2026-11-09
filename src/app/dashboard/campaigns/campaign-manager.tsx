@@ -1,5 +1,6 @@
 "use client";
 import {useState,useTransition} from "react";
+import Link from "next/link";
 import {changeCampaignState} from "./actions";
 type Campaign={id:string;name:string;status:string;scheduled_at:string|null;created_at:string};
 const labels:Record<string,string>={draft:"Borrador",scheduled:"Programada",running:"Activa",paused:"Pausada",completed:"Finalizada",cancelled:"Cancelada"};
@@ -10,7 +11,7 @@ export function CampaignManager({campaigns}:{campaigns:Campaign[]}){
   startTransition(async()=>{const result=await changeCampaignState(id,action);setNotice(result.message);if(result.ok)window.location.reload();});
  }
  return <section className="panel mt-6 p-5 sm:p-6">
- <h2 className="text-lg font-semibold">Administrar campañas</h2>
+ <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-lg font-semibold">Administrar campañas</h2><Link href="/dashboard/campaigns/history" className="rounded-lg border border-violet-400/30 px-3 py-2 text-xs text-violet-200">Ver entregas y errores</Link></div>
  <p className="mt-2 text-xs text-slate-400">Activá, pausá, reanudá o cancelá campañas. Los controles gestionan la programación; todavía no hay envíos automáticos.</p>
  {notice&&<p role="status" className="mt-3 rounded-lg border border-white/10 p-3 text-xs">{notice}</p>}
  <div className="mt-4 space-y-3">{campaigns.map(c=><article key={c.id} className="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 p-4">
