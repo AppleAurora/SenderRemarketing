@@ -31,7 +31,7 @@ export async function removePersonalLine(id:string){
 }
 
 type LinkMethod="qr"|"pairing";
-async function sessionRequest(lineId:string,operation:"start"|"status",method?:LinkMethod){
+async function sessionRequest(lineId:string,operation:"start"|"status"|"disconnect",method?:LinkMethod){
  const db=await createClient();const {data:{user}}=await db.auth.getUser();
  if(!user)return {ok:false,message:"Iniciá sesión nuevamente."};
  const {data:membership}=await db.from("organization_members").select("organization_id").eq("user_id",user.id).limit(1).maybeSingle();
@@ -45,7 +45,7 @@ async function sessionRequest(lineId:string,operation:"start"|"status",method?:L
  try{url=new URL(base);}catch{return {ok:false,message:"La URL del servidor de sesiones no es válida."};}
  if(url.protocol!=="https:")return {ok:false,message:"El servidor de sesiones debe utilizar HTTPS."};
  try{
-  const response=await fetch(new URL("/v1/lines/"+encodeURIComponent(lineId)+(operation==="status"?"/status":"/link"),url),{
+  const response=await fetch(new URL("/v1/lines/"+encodeURIComponent(lineId)+(operation==="status"?"/status":operation==="disconnect"?"/disconnect":"/link"),url),{
    method:operation==="status"?"GET":"POST",
    headers:{"Authorization":`Bearer ${token}`,"Content-Type":"application/json"},
    ...(operation==="start"?{body:JSON.stringify({organizationId:membership.organization_id,phone:line.phone_e164,method})}:{}),
@@ -55,7 +55,7 @@ async function sessionRequest(lineId:string,operation:"start"|"status",method?:L
   if(!response.ok)return {ok:false,message:typeof payload.message==="string"?payload.message:"El servicio de sesiones rechazó la solicitud."};
   const status=["disconnected","pending","connected","attention"].includes(payload.status)?payload.status:"pending";
   // A session is connected only when the worker explicitly confirms it.
-  if(operation==="status"){
+  if(operation==="status"||operation==="disconnect"){
    await db.from("whatsapp_lines").update({connection_status:status,last_health_check:new Date().toISOString()}).eq("id",lineId).eq("organization_id",membership.organization_id);
    revalidatePath("/dashboard/whatsapp/lines");
   }
@@ -66,3 +66,4 @@ async function sessionRequest(lineId:string,operation:"start"|"status",method?:L
 }
 export async function requestPersonalLineLink(lineId:string,method:LinkMethod){return sessionRequest(lineId,"start",method);}
 export async function checkPersonalLineLink(lineId:string){return sessionRequest(lineId,"status");}
+export async function disconnectPersonalLine(lineId:string){return sessionRequest(lineId,"disconnect");}
